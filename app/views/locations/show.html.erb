@@ -12,6 +12,9 @@
   <p>...not really that close. Time to walk.</p>
 <% end %>
 
+<div id="map-canvas" style="height:500px;width:500px;margin:0;padding:0;"></div>
+   
+
 <% @nearby_buses.each do |bus| %>
   <p>
     <strong>Route:</strong> <%= "#{bus['ROUTE']} #{bus['DIRECTION']}" %> <br>
@@ -22,3 +25,80 @@
 
 <%= link_to 'Edit', edit_location_path(@location) %> |
 <%= link_to 'Back', locations_path %>
+
+<!-- TODO: Make zoom level vary based on bus radius. -->
+<!-- Google Map API Script -->
+<script type="text/javascript">
+     function initialize() {
+       var myLatLng = new google.maps.LatLng(<%= @location.latitude %>, <%= @location.longitude %>)
+       var mapOptions = {
+         center: myLatLng,
+         zoom: 16
+       };
+       var map = new google.maps.Map(document.getElementById('map-canvas'),
+           mapOptions);
+       
+       var userMarker = new google.maps.Marker({
+           position: myLatLng,
+           map: map,
+           animation: google.maps.Animation.DROP,
+           title: "You Are Here"
+       });
+     }
+     google.maps.event.addDomListener(window, 'load', initialize);
+
+// The code below I added on the plane. Check later when internet is restored.
+
+    var nearby_buses = <%= @nearby_buses.to_json %>;
+
+    nearby_buses.forEach (function (element) {
+      var busLatLng = new google.maps.LatLng(element['LATITUDE'], element['LONGITUDE']);
+
+      var marker = new google.maps.Marker({
+        position: busLatLng,
+        map: map, 
+        animation: google.maps.Animation.DROP,
+        title: element['VEHICLE']
+      });
+    });
+
+    var personIcon = "<%= image_path 'man_icon.png' %>";
+
+    var myMarker = new google.maps.Marker({
+        position: myLatLng,
+        map: map, 
+        animation: google.maps.Animation.DROP,
+        title: "My Location", 
+        icon: personIcon
+      });
+
+    var contentString = '<div id="content">'+'<h2>Bus '+ element['VEHICLE']+' '+element['DIRECTION']+'</h2>'+ '<div id="bodyContent">'+'<p>Next Stop: '+ element['TIMEPOINT'] +'</p>' + '</div>'+ '</div>';
+
+    var infowindow = new google.maps.InfoWindow({
+      content: contentString
+    });
+
+
+   </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
