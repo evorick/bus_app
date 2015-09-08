@@ -1,24 +1,26 @@
-<p id="notice"><%= notice %></p>
-
-
-<p>
-  <strong>Standing at:</strong>
-  <%= @location.my_location %>
-</p>
-
-<p>Your closest buses are...</p>
-
-<% if @bus_count == 0 %>
-  <p>...not really that close. Time to walk.</p>
-<% end %>
-
-<% @nearby_buses.each do |bus| %>
+<container>
+  <p id="notice"><%= notice %></p>
+  
+  
   <p>
-    <strong>Route:</strong> <%= "#{bus['ROUTE']} #{bus['DIRECTION']}" %> <br>
-    <strong>Bus Number:</strong> <%= bus['VEHICLE'] %>
-    <strong>Next Stop:</strong> <%= bus['TIMEPOINT'] %>
+    <strong>Standing at:</strong>
+    <%= @location.my_location %>
   </p>
-<% end %>
-
-<%= link_to 'Edit', edit_location_path(@location) %> |
-<%= link_to 'Back', locations_path %>
+  
+  <p>Your closest buses are...</p>
+  
+  <% if @bus_count == 0 %>
+    <p>...not really that close. Time to walk.</p>
+  <% end %>
+  
+  <% @nearby_buses.each do |bus| %>
+    <p>
+      <strong>Route:</strong> <%= "#{bus['ROUTE']} #{bus['DIRECTION']}" %> <br>
+      <strong>Bus Number:</strong> <%= bus['VEHICLE'] %>
+      <strong>Next Stop:</strong> <%= bus['TIMEPOINT'] %>
+    </p>
+  <% end %>
+  
+  <%= link_to 'Edit', edit_location_path(@location) %> |
+  <%= link_to 'Back', locations_path %>
+</container>
