@@ -29,71 +29,65 @@
 <!-- TODO: Make zoom level vary based on bus radius. -->
 <!-- Google Map API Script -->
 <script type="text/javascript">
-     function initialize() {
-       var myLatLng = new google.maps.LatLng(<%= @location.latitude %>, <%= @location.longitude %>)
+
+function initialize() {
+
+       var myLatLng = new google.maps.LatLng(<%= @location.latitude %>, <%= @location.longitude %>);
+
+       var nearby_buses = <%= raw @nearby_buses.to_json %>;
+
        var mapOptions = {
          center: myLatLng,
-         zoom: 16
+         zoom: 15
        };
-       var map = new google.maps.Map(document.getElementById('map-canvas'),
-           mapOptions);
+
+       var map = new google.maps.Map(document.getElementById('map-canvas'), mapOptions);
+
+       var personIcon = "<%= image_path 'man_icon.png' %>";
        
        var userMarker = new google.maps.Marker({
            position: myLatLng,
            map: map,
            animation: google.maps.Animation.DROP,
-           title: "You Are Here"
+           title: "You Are Here",
+           icon: personIcon
        });
-     }
-     google.maps.event.addDomListener(window, 'load', initialize);
+     
 
-// The code below I added on the plane. Check later when internet is restored.
 
-    var nearby_buses = <%= @nearby_buses.to_json %>;
+// The code below from here to the "var contentString" is breaking the map.
 
-    nearby_buses.forEach (function (element) {
+
+
+  nearby_buses.forEach(function (element){
       var busLatLng = new google.maps.LatLng(element['LATITUDE'], element['LONGITUDE']);
 
-      var marker = new google.maps.Marker({
+      var busIcon = "<%= image_path 'bus_icon.png' %>";
+
+      var busMarker = new google.maps.Marker({
         position: busLatLng,
         map: map, 
         animation: google.maps.Animation.DROP,
         title: element['VEHICLE']
+        icon: busIcon
       });
+
+// The section just above is breaking the map and causes the whole thing to not be displayed.
+
+    var contentString = 
+        '<div class="content"><h4><i class="fa fa-bus" style="font-size: 90%;"></i> ' + element['ROUTE'] + ' ' + element['DIRECTION'] + '<span style="font-size: 60%; color: gray; font-weight: normal;"> (Vehicle #' + element['VEHICLE']+ ')</span></h4><p>Next stop: ' + element['TIMEPOINT'] + '</p> </div>'; 
+
+    var infowindow = new google.maps.InfoWindow({
+      content: contentString
     });
+   };
+}
 
-    // var personIcon = "<%= image_path 'man_icon.png' %>";
-
-    // var myMarker = new google.maps.Marker({
-    //     position: myLatLng,
-    //     map: map, 
-    //     animation: google.maps.Animation.DROP,
-    //     title: "My Location", 
-    //     icon: personIcon
-    //   });
-
-    // var contentString = '<div id="content">'+'<h2>Bus '+ element['VEHICLE']+' '+element['DIRECTION']+'</h2>'+ '<div id="bodyContent">'+'<p>Next Stop: '+ element['TIMEPOINT'] +'</p>' + '</div>'+ '</div>';
-
-    // var infowindow = new google.maps.InfoWindow({
-    //   content: contentString
-    // });
-
+google.maps.event.addDomListener(window, 'load', initialize);
 
    </script>
 
-
-
-
-
-
-
-
-
-
-
-
-
-
+  
 
 
 
